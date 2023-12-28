@@ -81,7 +81,7 @@ export default function Home() {
             if (res.status) {
                 setShowModalFollow(false);
                 setIsFollowOA(true);
-                navigate('/show-image')
+
             } else {
                 alert(res.msg);
             }
@@ -203,7 +203,7 @@ export default function Home() {
           </span>
                 </button>
             </div>
-            {showModalFollow && <ModalFollowOA handleFollow={handleFollow} />}
+            {showModalFollow && <ModalFollowOA handleFollow={follow} />}
             <ModalAlertFollow
                 ref={refModalAlertFollow}
                 followNow={() => {

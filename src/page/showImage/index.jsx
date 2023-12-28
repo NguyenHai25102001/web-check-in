@@ -1,16 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { decoHome, frame, logo, share } from "../../static";
+import {decoHome, frame, iconFacebook, iconZalo, logo, share} from "../../static";
 import html2canvas from "html2canvas";
-import { saveImageToGallery } from "zmp-sdk";
-import { useSnackbar } from "zmp-ui";
 import API, { baseUrl } from "../../api";
-import { REQUEST_API } from "../../api/method";
-import { useAuth} from "../../context/app.context";
 import LoadingPage from "../loading";
 
 import Swal from "sweetalert2";
-import { FacebookShareButton, FacebookIcon } from "react-share";
 import axios from "axios";
 
 const WIDTH_WINDOW = window.innerWidth;
@@ -66,7 +61,7 @@ export default function ShowImage() {
 
     };
 
-    const shareImage =async () => {
+    const shareImage =async (type) => {
         if (!selectedImage) {
             Swal.fire({
                 position: "top-end",
@@ -84,7 +79,13 @@ export default function ShowImage() {
                 if(response.data?.status){
                     const linkShare =`${baseUrl}${response.data?.link}`;
                     const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${linkShare}`;
-                    window.open(facebookShareUrl, '_blank', 'width=600,height=400');
+                    const zaloShareUrl = `https://zalo.me/d?u=${linkShare}`;
+                    if (type==='zalo'){
+                        window.open(zaloShareUrl, '_blank', 'width=600,height=400');
+                    }else {
+                        window.open(facebookShareUrl, '_blank', 'width=600,height=400');
+
+                    }
                 }
 
             }catch (e) {
@@ -113,8 +114,9 @@ export default function ShowImage() {
                 const res=await axios.post(API.checkinEvent(),formData)
                 console.log(res)
                 if (res?.status) {
-                    shareImage();
+                    shareImage('face');
                     downloadBase64Image();
+
                 } else {
                     Swal.fire({
                         title: "Checkin thất bại",
@@ -162,9 +164,21 @@ export default function ShowImage() {
             {
                 selectedImage?(<div className='position-absolute w-100'
                                style={{ position: "absolute", top: "50px", zIndex: 10 }}
-                   onClick={shareImage} role={'button'}>
-                    <div className="d-flex justify-content-start w-100">
-                        <img src={share} alt="" className='ms-2'/>
+                 role={'button'}>
+                    <div className="d-flex justify-content-end relative w-[300px] h-[70px] items-center p-1 gap-2"
+                    style={{
+                        background:`url(${share})`,
+                        backgroundSize:'cover'
+                    }}>
+
+
+
+                        <img src={iconFacebook} alt="" className='size-11'   onClick={()=>shareImage('face')} />
+                        <img src={iconZalo} alt="" className='size-11'   onClick={()=>shareImage('zalo')}/>
+
+
+
+
                     </div>
 
                 </div>):(
