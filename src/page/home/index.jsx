@@ -24,44 +24,16 @@ export default function Home() {
     const refModalAlertFollow = useRef(null);
     const [code, setCode] = useState("");
     const [isCheckin, setIsCheckin] = useState(true); //true cho checkin
-    const [showButtonCheckin, setShowButtonCheckin] = useState(true);
-    const handleChooseImage = async () => {
-        // try {
-        //     await chooseImage({
-        //         sourceType: ["album", "camera"],
-        //         cameraType: "front",
-        //         count: 1,
-        //         success: ({ filePaths }) => {
-        //             navigate("/showImage", {
-        //                 state: { imageFile: filePaths, info: data, frameBase64 },
-        //             });
-        //         },
-        //     });
-        // } catch (error) {
-        //     console.log(error);
-        // }
-    };
+
     useEffect(() => {
            setPhoneUser(sessionStorage.getItem('phoneUser').trim())
         }, []);
-    const handleCheckin = async () => {
 
-        // try{
-        //     const response=await axios.post(API.checkinEvent());
-        //     console.log(response)
-        // }catch (e) {
-        //     console.log(e)
-        // }
-        // try {
-        //     const { userAllow, message } = await requestCameraPermission({});
-        //     if (userAllow) {
-        //         handleChooseImage();
-        //     }
-        // } catch (error) {
-        //     console.log(error);
-        // }
+
+    const handleChooseImage = async () => {
+        navigate('/show-image',{state:{frameBase64}})
+
     };
-
     const getEvent = async () => {
         try {
             let formData = new FormData();
@@ -90,7 +62,7 @@ export default function Home() {
 
     // follow OA
     const follow = async () => {
-        console.log(phoneUser)
+
         try {
             const phoneUser=sessionStorage.getItem('phoneUser').trim();
 
@@ -109,6 +81,7 @@ export default function Home() {
             if (res.status) {
                 setShowModalFollow(false);
                 setIsFollowOA(true);
+                navigate('/show-image')
             } else {
                 alert(res.msg);
             }
@@ -137,19 +110,7 @@ export default function Home() {
     };
 
     const handleFollowFromAlert = async () => {
-
-        try {
-            API.followOA({
-                id: ID_OA,
-                success: () => follow(),
-                fail: (err) => {
-                    console.log("false");
-                },
-            });
-
-        } catch (error) {
-            console.log(error);
-        }
+      follow();
     };
 
 
@@ -225,7 +186,7 @@ export default function Home() {
                     onClick={() => {
                         if (isFollowOA && isCheckin) {
 
-                            window.location.href='/show-image'
+                            handleChooseImage()
                         } else if (!isCheckin && isFollowOA) {
                             Swal.fire({
                                 title: "Bạn đã Checkin",
