@@ -9,6 +9,7 @@ const ModalFollowOA = ({ handleFollow }) => {
                     <img
                         src={logo}
                         className=" w-48 h-auto object-contain mx-auto my-6"
+                        alt={''}
                     />
                     <p className="text-base text-center font-bold text-black">
                         Quan tâm ẦU Ơ

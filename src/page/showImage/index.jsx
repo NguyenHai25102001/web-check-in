@@ -14,12 +14,13 @@ export default function ShowImage() {
     const location = useLocation();
     const infoData = location.state?.info;
     const frameBase64 = location.state?.frameBase64;
+    const selectedImage = location.state?.selectedImage;
     const circularDivRef = useRef(null);
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState(); //ảnh share
     const navigate = useNavigate();
-    const [selectedImage, setSelectedImage] = useState(null);
+  //  const [selectedImage, setSelectedImage] = useState(null);
     const handleConvertToBase64AndSaveImage = () => {
         if(!!selectedImage){
             html2canvas(circularDivRef.current, {
@@ -42,24 +43,14 @@ export default function ShowImage() {
                 //     },
                 //     fail: (error) => {
                 //         console.log(error);
-                //     },
+                //     },z
                 // });
             });
         }
 
     }
 
-    const handleImageChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSelectedImage(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
 
-    };
 
     const shareImage =async (type) => {
         if (!selectedImage) {
@@ -86,6 +77,7 @@ export default function ShowImage() {
                         window.open(facebookShareUrl, '_blank', 'width=600,height=400');
 
                     }
+
                 }
 
             }catch (e) {
@@ -163,20 +155,16 @@ export default function ShowImage() {
             />
             {
                 selectedImage?(<div className='position-absolute w-100'
-                               style={{ position: "absolute", top: "50px", zIndex: 10 }}
+                               style={{ position: "absolute", top: "20px", zIndex: 10 }}
                  role={'button'}>
-                    <div className="d-flex justify-content-end relative w-[300px] h-[70px] items-center p-1 gap-2"
+                    <div className="d-flex justify-content-end relative w-[50%] h-[60px] items-center p-1 gap-2"
                     style={{
                         background:`url(${share})`,
                         backgroundSize:'cover'
                     }}>
 
-
-
                         <img src={iconFacebook} alt="" className='size-11'   onClick={()=>shareImage('face')} />
                         <img src={iconZalo} alt="" className='size-11'   onClick={()=>shareImage('zalo')}/>
-
-
 
 
                     </div>
@@ -194,10 +182,7 @@ export default function ShowImage() {
             }
 
             {!selectedImage?(
-                <button type={'button'}   className='bg-[#1E9FF2] min-h-[50px] rounded-full flex items-center justify-center'>
-                    <input type="file" id="show_image" className="d-none" onChange={handleImageChange} accept={'image/*'} />
-                    <label role={'button'} htmlFor="show_image" className='p-2 text-[#FFFFFF] text-base text-center font-normal'>Chọn ảnh</label>
-                </button>
+               ''
                 ):(
 
                 <div className="relative bg-transparent p-2">

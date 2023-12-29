@@ -52,22 +52,26 @@ const ModalRequestPhone = () => {
 
      }
     return (
-        <div className="absolute  p-0 m-0 w-full h-full flex flex-cols items-center justify-center bg-[#222222] main-home ">
+        <div className="absolute  p-0 m-0 w-full h-full flex flex-cols items-center justify-center bg-[#92D3F9] main-home">
 
             {
                 isOpen ?(
                     <div className="bg-white position-absolute rounded w-10/12">
-                        <div className="text-center fs-3 p-2">Vui lòng nhập số điện thoại</div>
+                        <div className="text-center fs-4 p-2">Vui lòng nhập số điện thoại</div>
                         <form action="" onSubmit={handleSubmitPhone}>
-                            <div className="p-2 flex">
-                                <input type="text" name="phome"
-                                       id="phone"
-                                       value={phone}
-                                       onChange={(e)=>setPhone(e.target.value)}
-                                       className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Số điện thoại..."/>
-                                <button className="ms-1 py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
-                                    Submit
-                                </button>
+                            <div className="p-2">
+                                <input
+                                    type="text"
+                                    name="phome"
+                                    id="phone"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    className="form-control outline-none"
+                                    placeholder="Số điện thoại..."
+                                />
+                                <div className="d-flex justify-center">
+                                    <button className="btn btn-success mt-3">Đăng Nhập</button>
+                                </div>
                             </div>
                         </form>
                     </div>

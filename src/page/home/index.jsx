@@ -25,15 +25,13 @@ export default function Home() {
     const [code, setCode] = useState("");
     const [isCheckin, setIsCheckin] = useState(true); //true cho checkin
 
+
     useEffect(() => {
            setPhoneUser(sessionStorage.getItem('phoneUser').trim())
         }, []);
 
 
-    const handleChooseImage = async () => {
-        navigate('/show-image',{state:{frameBase64}})
 
-    };
     const getEvent = async () => {
         try {
             let formData = new FormData();
@@ -55,6 +53,23 @@ export default function Home() {
             console.log(error);
         }
     };
+
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+
+
+                navigate('/show-image', { state: { frameBase64, selectedImage: reader.result } });
+            };
+
+            reader.readAsDataURL(file);
+        }
+    };
+
+
+
 
     useEffect(() => {
         getEvent();
@@ -181,27 +196,32 @@ export default function Home() {
             </div>
 
             <div className="absolute w-full bottom-0 flex flex-col items-center justify-center py-2 bg-[#E2F6FF] z-10">
-                <button
-                    className="bg-[#1E9FF2] min-h-[50px] rounded-full flex items-center justify-center w-[90%]"
-                    onClick={() => {
-                        if (isFollowOA && isCheckin) {
-
-                            handleChooseImage()
-                        } else if (!isCheckin && isFollowOA) {
-                            Swal.fire({
-                                title: "Bạn đã Checkin",
-                                icon: "info",
-                                confirmButtonText: "Xác nhận",
-                            });
-                        } else {
-                            refModalAlertFollow.current?.setShowModal(true);
-                        }
-                    }}
-                >
-          <span className="text-[#FFFFFF] text-base text-center font-normal">
-            Chụp Ảnh Check In
-          </span>
+                <button type={'button'}   className='bg-[#1E9FF2] min-h-[50px] rounded-full flex items-center justify-center w-[90%]'>
+                    <input type="file" id="show_image" className="d-none" onChange={handleImageChange} accept={'image/*'} />
+                    <label role={'button'} htmlFor="show_image" className='text-white bg-[#1E9FF2] min-h-[50px] rounded-full flex items-center justify-center w-[90%]'>
+                        Chụp Ảnh Check In</label>
                 </button>
+          {/*      <button*/}
+          {/*          className="bg-[#1E9FF2] min-h-[50px] rounded-full flex items-center justify-center w-[90%]"*/}
+          {/*          onClick={() => {*/}
+          {/*              if (isFollowOA && isCheckin) {*/}
+
+          {/*                  handleChooseImage()*/}
+          {/*              } else if (!isCheckin && isFollowOA) {*/}
+          {/*                  Swal.fire({*/}
+          {/*                      title: "Bạn đã Checkin",*/}
+          {/*                      icon: "info",*/}
+          {/*                      confirmButtonText: "Xác nhận",*/}
+          {/*                  });*/}
+          {/*              } else {*/}
+          {/*                  refModalAlertFollow.current?.setShowModal(true);*/}
+          {/*              }*/}
+          {/*          }}*/}
+          {/*      >*/}
+          {/*<span className="text-[#FFFFFF] text-base text-center font-normal">*/}
+          {/*  Chụp Ảnh Check In*/}
+          {/*</span>*/}
+          {/*      </button>*/}
             </div>
             {showModalFollow && <ModalFollowOA handleFollow={follow} />}
             <ModalAlertFollow
