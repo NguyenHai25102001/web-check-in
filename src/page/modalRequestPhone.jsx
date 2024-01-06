@@ -18,7 +18,6 @@ const ModalRequestPhone = () => {
 
     const handleLogin = async () => {
       setIsOpen(true)
-
     };
     const closeMiniApp = async () => {
         // try {

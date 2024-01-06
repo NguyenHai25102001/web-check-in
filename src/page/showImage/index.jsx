@@ -6,9 +6,10 @@ import API, { baseUrl } from "../../api";
 import LoadingPage from "../loading";
 
 import Swal from "sweetalert2";
+
 import axios from "axios";
 
-const WIDTH_WINDOW = window.innerWidth;
+
 
 export default function ShowImage() {
     const location = useLocation();
@@ -20,36 +21,32 @@ export default function ShowImage() {
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState(); //ảnh share
     const navigate = useNavigate();
-  //  const [selectedImage, setSelectedImage] = useState(null);
-    const handleConvertToBase64AndSaveImage = () => {
-        if(!!selectedImage){
+    const [linkShare, setLinkShare] = useState('');
+    const id_oa='3427931215366581486';
+    const handleConvertToBase64AndSaveImage = async () => {
+        if (!!selectedImage) {
             html2canvas(circularDivRef.current, {
                 allowTaint: true,
                 useCORS: true,
                 backgroundColor: "transparent",
-            }).then((canvas) => {
+            }).then(async (canvas) => {
                 const base64Data = canvas.toDataURL();
                 setImage(base64Data);
-                // await saveImageToGallery({
-                //     imageBase64Data: base64Data.toString(),
-                //
-                //     success: () => {
-                //         openSnackbar({
-                //             text: "Lưu ảnh thành công",
-                //             type: "success",
-                //             duration: 2000,
-                //             position: "bottom",
-                //         });
-                //     },
-                //     fail: (error) => {
-                //         console.log(error);
-                //     },z
-                // });
+                const data = new FormData();
+                data.append("base64", base64Data);
+
+                try {
+                    const response = await axios.post(API.convertBase64(), data);
+                    if (response.data?.status) {
+                        const linkShare = `${baseUrl}${response.data?.link}`;
+                        setLinkShare(linkShare);
+                    }
+                } catch (error) {
+                    console.error("Error converting to base64 and saving image:", error);
+                }
             });
         }
-
-    }
-
+    };
 
 
     const shareImage =async (type) => {
@@ -63,30 +60,75 @@ export default function ShowImage() {
             });
 
         }else {
-            try {
-                const data=new FormData();
-                data.append("base64",image)
-                const response=await axios.post(API.convertBase64(),data)
-                if(response.data?.status){
-                    const linkShare =`${baseUrl}${response.data?.link}`;
-                    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${linkShare}`;
-                    const zaloShareUrl = `https://zalo.me/d?u=${linkShare}`;
-                    if (type==='zalo'){
-                        window.open(zaloShareUrl, '_blank', 'width=600,height=400');
-                    }else {
-                        window.open(facebookShareUrl, '_blank', 'width=600,height=400');
+            if( linkShare){
+                const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${linkShare}`;
 
-                    }
+
+                if (type==='zalo'){
+                    return (
+                        <div
+                            className="zalo-share-button"
+                            data-href={linkShare}
+                            data-oaid={id_oa}
+                            data-layout="4"
+                            data-color="blue"
+                            data-customize="false"
+                        >
+
+                        </div>
+                    );
+                }else {
+                    window.open(facebookShareUrl, '_blank', 'width=600,height=400');
 
                 }
-
-            }catch (e) {
-                console.log(e)
             }
+
         }
     };
+    useEffect(() => {
+        const convertBase64 = async () => {
+            const data = new FormData();
+            data.append("base64", image);
+            try {
+                const response = await axios.post(API.convertBase64(), data);
+                if (response.data?.status) {
+                    const linkShare = `${baseUrl}${response.data?.link}`;
+                    setLinkShare(linkShare)
 
+                }
+            } catch (e) {
 
+                console.error(e);
+            }
+        };
+
+        convertBase64();
+    }, [image]);
+
+    const loadZaloSDK = () => {
+        const script = document.createElement('script');
+        script.src = 'https://sp.zalo.me/plugins/sdk.js';
+        script.defer = true;
+
+        script.onload = () => {
+            console.log('Zalo SDK script loaded successfully');
+            ZaloSocialSDK.reload(); // Gọi hàm reload() để khởi tạo lại widget
+        };
+
+        script.onerror = (error) => {
+            // Handle script loading error
+            console.error('Error loading Zalo SDK script:', error);
+        };
+
+        document.head.appendChild(script);
+    };
+
+    useEffect(() => {
+        if(linkShare){
+            loadZaloSDK();
+        }
+
+    }, [linkShare]);
 
     const handleCheckinEvent = async () => {
         if (!image) {
@@ -106,8 +148,9 @@ export default function ShowImage() {
                 const res=await axios.post(API.checkinEvent(),formData)
                 console.log(res)
                 if (res?.status) {
-                    shareImage('face');
                     downloadBase64Image();
+                    shareImage('face');
+
 
                 } else {
                     Swal.fire({
@@ -144,27 +187,40 @@ export default function ShowImage() {
     };
 
 
-
-
     return (
         <div className="position-relative w-full h-full flex flex-col items-center justify-center bg-[#92D3F9] relative main-home h-screen">
+
+
             <img
                 src={decoHome}
                 className="absolute top-0 right-0 w-[240px] h-[115px]"
                 alt={''}
             />
             {
-                selectedImage?(<div className='position-absolute w-100'
-                               style={{ position: "absolute", top: "20px", zIndex: 10 }}
-                 role={'button'}>
+                linkShare !==''?(<div className='position-absolute w-100'
+                                      style={{ position: "absolute", top: "20px", zIndex: 10 }}
+                                      role={'button'}>
                     <div className="d-flex justify-content-end relative w-[50%] h-[60px] items-center p-1 gap-2"
-                    style={{
-                        background:`url(${share})`,
-                        backgroundSize:'cover'
-                    }}>
+                         style={{
+                             background:`url(${share})`,
+                             backgroundSize:'cover'
+                         }}>
 
                         <img src={iconFacebook} alt="" className='size-11'   onClick={()=>shareImage('face')} />
-                        <img src={iconZalo} alt="" className='size-11'   onClick={()=>shareImage('zalo')}/>
+
+
+                        <div
+                            className="zalo-share-button"
+                            data-href={linkShare}
+                            data-oaid={id_oa}
+                            data-layout="4"
+                            data-color="blue"
+                            data-customize="false"
+
+                        >
+
+                        </div>
+
 
 
                     </div>
@@ -181,11 +237,12 @@ export default function ShowImage() {
                     </div>)
             }
 
-            {!selectedImage?(
-               ''
-                ):(
 
-                <div className="relative bg-transparent p-2">
+            {!selectedImage?(
+                ''
+            ):(
+
+                <div className="relative bg-transparent p-2 w-100">
                     <div
                         id="download"
                         ref={circularDivRef}
@@ -205,7 +262,7 @@ export default function ShowImage() {
                         <div className="w-[80%] h-[80%] rounded-full overflow-hidden bg-transparent">
                             <img
                                 src={selectedImage}
-                                className="w-[100%] h-[100%] rounded-full mx-auto object-cover circular-image"
+                                className="w-[100%] h-[100%] rounded-full mx-auto circular-image object-fit-cover"
                                 alt={''}
                             />
                         </div>
@@ -222,12 +279,12 @@ export default function ShowImage() {
                         </div>
                     </div>
                 </div>
-                )}
+            )}
 
             <div className="absolute w-full bottom-0 flex items-center justify-center py-2 bg-[#92D3F9] z-10">
                 <button
                     className="bg-[#1E9FF2] min-h-[50px] rounded-full flex items-center justify-center w-[90%]"
-                     onClick={handleCheckinEvent}
+                    onClick={handleCheckinEvent}
                 >
           <span className="text-[#FFFFFF] text-base text-center font-normal">
             Check In Tham Gia
