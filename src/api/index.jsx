@@ -1,4 +1,4 @@
-export const baseUrl = "https://zaloapp.com.vn/";
+export const baseUrl = "http://zalominiapp.winwingroup.vn/";
 
 
 
