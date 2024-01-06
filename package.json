@@ -29,7 +29,10 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "globals": {
+      "ZaloSocialSDK": true
+    }
   },
   "browserslist": {
     "production": [
