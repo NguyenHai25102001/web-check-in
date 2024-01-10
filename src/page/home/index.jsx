@@ -32,7 +32,6 @@ export default function Home() {
 
 
 
-
     const getEvent = async () => {
         try {
             let formData = new FormData();
@@ -76,7 +75,6 @@ export default function Home() {
         getEvent();
     }, []);
 
-    // follow OA
     const follow = async () => {
 
         try {
@@ -167,9 +165,34 @@ export default function Home() {
         }
     }, [phoneUser]);
 
+    const loadZaloSDK = () => {
+        const script = document.createElement('script');
+        script.src = 'https://sp.zalo.me/plugins/sdk.js';
+        script.defer = true;
+
+        script.onload = () => {
+            console.log('Zalo SDK script loaded successfully');
+            ZaloSocialSDK.reload(); // Gọi hàm reload() để khởi tạo lại widget
+        };
+
+        script.onerror = (error) => {
+            // Handle script loading error
+            console.error('Error loading Zalo SDK script:', error);
+        };
+
+        document.head.appendChild(script);
+    };
+    useEffect(() => {
+        if(phoneUser){
+            loadZaloSDK();
+        }
+
+    }, [phoneUser]);
+
 
     return (
         <div className="w-full h-full bg-[#E2F6FF] overflow-y-scroll no-scrollbar relative">
+
             <div className="relative">
                 <img
                     src={decoHome}
@@ -189,11 +212,24 @@ export default function Home() {
                     Chào mừng bạn đến với
                     <br /> Sự Kiện {data?.name}
                 </p>
+                <div className="">
+
+                    {
+                        ID_OA&& <div className="zalo-follow-only-button w-100 h-100"
+                                         data-oaid={ID_OA}
+                        >
+
+                        </div>
+                    }
+                </div>
+
                 <div className="w-full px-6">
                     <p className="text-[#405062] text-base text-center font-normal mb-20">
                         {/*{data?.description}*/}
                     </p>
                 </div>
+
+
             </div>
 
             <div className="absolute w-full bottom-0 flex flex-col items-center justify-center py-2 bg-[#E2F6FF] z-10">
@@ -232,6 +268,7 @@ export default function Home() {
                 }}
             />
             {loading && <LoadingPage />}
+
         </div>
     );
 }

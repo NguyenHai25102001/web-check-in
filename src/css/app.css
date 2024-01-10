@@ -9,3 +9,14 @@
 p{
   margin: 0 !important;
 }
+
+.app {
+  min-width: 80px !important;
+  height: 25px !important;
+
+}
+.app__icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+}

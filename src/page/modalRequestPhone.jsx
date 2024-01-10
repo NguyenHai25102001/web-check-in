@@ -138,12 +138,12 @@ const ModalRequestPhone = () => {
                                 Liên kết số điện thoại.
                             </p>
                         </button>
-                        <button
-                            className="w-full box-content py-2 flex items-center justify-center border-2 border-[#01B2FF] mb-6 rounded-md"
-                            onClick={closeMiniApp}
-                        >
-                            <p className="text-base text-black font-light m-0">Từ chối và thoát</p>
-                        </button>
+                        {/*<button*/}
+                        {/*    className="w-full box-content py-2 flex items-center justify-center border-2 border-[#01B2FF] mb-6 rounded-md"*/}
+                        {/*    onClick={closeMiniApp}*/}
+                        {/*>*/}
+                        {/*    <p className="text-base text-black font-light m-0">Từ chối và thoát</p>*/}
+                        {/*</button>*/}
                     </div>
                     )
             }

@@ -16,11 +16,6 @@ const REQUEST_API = async ({ url, method, data }) => {
         if (String(e).indexOf("Network Error") !== -1) {
             throw new Error("Không có internet");
         }
-            // else if (
-            //   e.message.indexOf('Request failed with status code 400') !== -1
-            // ) {
-            //   throw new Error('Vui lòng đăng nhập.');
-        // }
         else {
             // AlertOnly(e.message);
             throw new Error(e);
