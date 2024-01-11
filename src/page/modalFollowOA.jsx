@@ -6,7 +6,6 @@ export const ID_OA = "3427931215366581486";
 
 const ModalFollowOA = ({ handleFollow }) => {
 
-
     window.handleFollow = (res) => {
         handleFollow()
     };

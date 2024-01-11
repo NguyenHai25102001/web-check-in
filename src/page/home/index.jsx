@@ -106,22 +106,6 @@ export default function Home() {
         }
     };
 
-    const handleFollow = async () => {
-
-        try{
-            setShowModalFollow(false);
-            const data = new FormData();
-            data.append("phone", phoneUser);
-            data.append("app_id", APP_ID);
-            data.append("type", 1);
-             const response= await  axios.post(API.followOA(),data);
-
-        }catch (e) {
-            console.log(e)
-        }
-
-
-    };
 
     const handleFollowFromAlert = async () => {
       follow();
@@ -212,16 +196,6 @@ export default function Home() {
                     Chào mừng bạn đến với
                     <br /> Sự Kiện {data?.name}
                 </p>
-                <div className="">
-
-                    {
-                        ID_OA&& <div className="zalo-follow-only-button w-100 h-100"
-                                         data-oaid={ID_OA}
-                        >
-
-                        </div>
-                    }
-                </div>
 
                 <div className="w-full px-6">
                     <p className="text-[#405062] text-base text-center font-normal mb-20">
